@@ -2,7 +2,9 @@ package Base;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -10,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.testng.Reporter;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class Reader {
@@ -18,58 +21,65 @@ public class Reader {
 	FileInputStream fis;
 	XSSFWorkbook wbook;
 	XSSFSheet sheet;
-	String filePath="C:\\Users\\appadmin\\git\\Repo\\src\\test\\java\\resources\\ReadExcel.xlsx";
+	String filePath="C:\\Users\\shank\\git\\Repo\\src\\test\\java\\resources\\ReadExcel.xlsx";
 	DataFormatter formatter = new DataFormatter();
 	
-	@Test
-	public void ReadExcel() {
-		try {
+	
+	@Test(dataProvider = "dProvider")
+	public void printvalue(Map<String, String> testdata) {
+	System.out.println(testdata);	
+	}
+	
+	@DataProvider(name="dProvider")
+	public Object[][] ReadExcel() throws Exception{
+
 		file = new File(filePath);
 		fis = new FileInputStream(file);
-		wbook = new XSSFWorkbook();
+		wbook = new XSSFWorkbook(fis);
 		sheet = wbook.getSheet("firstPage");
 		
+		System.out.println("Check ");
+		
 		//Row count 
-		int rowCount;
-		rowCount= sheet.getLastRowNum();
+		int rowCount= sheet.getLastRowNum();
 		System.out.println(rowCount);
 		
-		//Header row intialising
-		XSSFRow headerRow = sheet.getRow(0);
+		Map<String, String> map = new HashMap();
 		
-		//Coulmn count
-		int columnCount= headerRow.getLastCellNum();
-		System.out.println(columnCount);
+		List<Map<String,String>> list = new ArrayList<>();
 		
 		//Datarow
+		for(int i =0; i<rowCount;i++) {
 		
-        XSSFRow	dataRow= sheet.getRow(1);
+			 XSSFRow headerRow = sheet.getRow(0);
+			 XSSFRow dataRow= sheet.getRow(i);
+			 int columnCount= headerRow.getLastCellNum();
+			 for(int j = 0;j<columnCount; j++) {
+				 
+				  
+				 String key = formatter.formatCellValue(headerRow.getCell(j));
+				 String value = formatter.formatCellValue(dataRow.getCell(j));
+				 
+				 
+				 map.put(key, value);
+				 
+			 }
+			 
+			 list.add(map);
+			 
+			 }
 		
-        //data map
-        Map<String, String> datamap = new HashMap();
-        
-		for(int i =0;i<rowCount;i++) {
+		Object[][] obj = new Object[list.size()][1];
 		
-			//reading Key values 
-			String keyCell = formatter.formatCellValue(headerRow.getCell(i));
+		for(int i=0;i<list.size();i++) {
+	
+			obj[i][0]= list.get(i);
 			
-			//reading values 
-			String cell = formatter.formatCellValue(dataRow.getCell(i));
-
-			//Add key & cell into map
-			datamap.put(keyCell, cell);
-			
-			System.out.println(datamap);
-			
+				
 		}
+		return obj;
 		
-		
-		//columnCount=
-		
-		}
-		catch(Exception e) {
-			Reporter.log("Exception occured while reading excel:"+e.getMessage(), true);
-		}
+    	
 	}
 	
 	
