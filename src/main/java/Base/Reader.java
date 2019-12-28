@@ -24,7 +24,6 @@ public class Reader {
 	String filePath="C:\\Users\\shank\\git\\Repo\\src\\test\\java\\resources\\ReadExcel.xlsx";
 	DataFormatter formatter = new DataFormatter();
 	
-	
 	@Test(dataProvider = "dProvider")
 	public void printvalue(Map<String, String> testdata) {
 	System.out.println(testdata);	
