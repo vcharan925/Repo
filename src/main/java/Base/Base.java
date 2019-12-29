@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 
 public class Base {
 
+	
 	public static WebDriver driver;
 	public static JavascriptExecutor js = (JavascriptExecutor) driver;
 	
