@@ -53,7 +53,7 @@ public class Reader {
 			 XSSFRow headerRow = sheet.getRow(0);
 			 XSSFRow dataRow= sheet.getRow(i);
 			 int columnCount= headerRow.getLastCellNum();
-			 for(int j = 0;j<columnCount; j++) {
+			 for(int j = 1;j<=columnCount; j++) {
 				 
 				  
 				 String key = formatter.formatCellValue(headerRow.getCell(j));
